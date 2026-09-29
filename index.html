@@ -1,0 +1,96 @@
+<div class="card">
+      <div class="tag">BEST COLORS</div>
+      <h3>Tumhari skin ke liye best colors</h3>
+      <p class="hint">${s.note}</p>
+      <div class="swatches">
+        ${s.best.map((c,i)=><div class="sw" style="background:${s.colors[i]}" title="${c}"></div>).join('')}
+      </div>
+      <div style="margin-top:8px">${s.best.map(c=><span class="pill">${c}</span>).join('')}</div>
+    </div>
+
+    <div class="card avoid">
+      <div class="tag">AVOID</div>
+      <h3>Ye colors avoid karo</h3>
+      <div style="margin-top:10px">${s.avoid.map(c=><span class="pill">${c}</span>).join('')}</div>
+    </div>
+
+    <div class="card">
+      <div class="tag">FIT GUIDE</div>
+      <h3>${state.body} body ke liye</h3>
+      <p style="color:#bbb;font-size:14px;line-height:1.6;margin-top:8px">${b.fit}</p>
+      <p style="color:#e86868;font-size:13px;margin-top:10px">✗ Avoid: ${b.avoid}</p>
+    </div>
+
+    <div class="card">
+      <div class="tag">${state.occ.toUpperCase()} LOOK</div>
+      <h3>Outfit combination</h3>
+      <div class="row"><span>Outfit</span><span>${o.outfit}</span></div>
+      <div class="row"><span>Footwear</span><span>${o.shoe}</span></div>
+      <div class="row"><span>Accessories</span><span>${o.extra}</span></div>
+      <div class="row"><span>Watch Metal</span><span>${s.metal}</span></div>
+      <div class="row"><span>Style Type</span><span>${state.gender}</span></div>
+    </div>
+
+    <div class="card">
+      <div class="tag">RECOMMENDED ITEMS</div>
+      <h3>Ye zaroor try karo</h3>
+      <div style="margin-top:10px">${b.items.map(i=><span class="pill">${i}</span>).join('')}</div>
+      <div class="buy">
+        <a href="https://www.amazon.in/s?k=${encodeURIComponent(state.gender+' '+occ+' '+b.items[0]+' '+s.best[0])}&tag=YOURTAG-21" target="_blank">Amazon pe dekho</a>
+        <a class="alt" href="https://www.flipkart.com/search?q=${encodeURIComponent(state.gender+' '+occ+' outfit')}&affid=YOURID" target="_blank">Flipkart</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="tag">WATCH & WEARABLES</div>
+      <h3>Tumhare liye best</h3>
+      <div class="row"><span>Metal</span><span>${s.metal}</span></div>
+      <div class="row"><span>Style</span><span>${occ==='office'||occ==='wedding'?'Classic / Formal':'Sporty / Casual'}</span></div>
+      <div class="buy">
+        <a href="https://www.amazon.in/s?k=${encodeURIComponent(s.metal.split('/')[0].trim()+' watch '+state.gender)}&tag=YOURTAG-21" target="_blank">Watch dekho</a>
+      </div>
+    </div>
+  ;
+  document.getElementById('resultBody').innerHTML=html;
+  go('s3');
+}
+
+function saveLook(){
+  if(!lastResult)return;
+  const favs=JSON.parse(localStorage.getItem('jogaFavs')||'[]');
+  favs.push({...lastResult,t:Date.now()});
+  localStorage.setItem('jogaFavs',JSON.stringify(favs));
+  alert('✓ Look saved!');
+}
+
+function showFavs(){
+  const favs=JSON.parse(localStorage.getItem('jogaFavs')||'[]');
+  const list=document.getElementById('favList');
+  if(!favs.length){list.innerHTML='<div class="empty">Abhi koi look save nahi kiya.<br>Style banao aur ★ dabao!</div>';}
+  else{
+    list.innerHTML=favs.reverse().map((f,i)=>
+      <div class="fav-item">
+        <span class="del" onclick="delFav(${favs.length-1-i})">✕ Delete</span>
+        <b>${f.occ}</b> • ${f.skin} • ${f.body}<br>
+        <span style="color:#888;font-size:12px">${f.gender} • ${new Date(f.t).toLocaleDateString()}</span>
+      </div>`).join('');
+  }
+  go('s4');
+}
+
+function delFav(i){
+  const favs=JSON.parse(localStorage.getItem('jogaFavs')||'[]');
+  favs.splice(i,1);
+  localStorage.setItem('jogaFavs',JSON.stringify(favs));
+  showFavs();
+}
+
+function reset(){
+  state.gender=state.skin=state.body=state.occ='';
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  document.getElementById('goBtn').disabled=true;
+  go('s2');
+}
+</script>
+</body>
+</html>
