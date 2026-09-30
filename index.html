@@ -87,16 +87,12 @@ h1 em{font-style:normal;background:linear-gradient(135deg,#f5c542,#e88b3c);-webk
     <button class="fav-btn" onclick="showFavs()">★ Saved</button>
   </div>
 
-  <!-- SCREEN 1: WELCOME (ab photo upload button bhi hai) -->
+  <!-- SCREEN 1: WELCOME -->
   <div class="screen active" id="s1">
     <h1>Chaliye, apna <em>best style</em> dhoondhte hain!</h1>
     <p class="sub">Apni photo upload karein aur dekhein ki watch, sunglasses, cap ya chain aap par kaisa lagega. Ya phir 3 sawaalon me perfect style suggestion payein.</p>
-
-    <!-- PROMINENT PHOTO UPLOAD BUTTON -->
     <button class="btn btn-green btn-big" onclick="openTryOn()">📸 Photo Upload Karke Try Karein</button>
-
     <div class="divider">ya phir</div>
-
     <div class="card" style="background:linear-gradient(135deg,#241f0f,#161616);border-color:#3d3418">
       <div class="tag">BILKUL FREE</div>
       <h3>Style Suggestions Payein</h3>
@@ -188,21 +184,19 @@ h1 em{font-style:normal;background:linear-gradient(135deg,#f5c542,#e88b3c);-webk
   </div>
 </div>
 
-<input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhoto(event)">
+<input type="file" id="photoInput" accept="image/*" style="position:fixed;top:-9999px;left:-9999px;opacity:0" onchange="handlePhoto(event)">
 
 <script>
-const state={gender:'',body:'',occ:''};
+  const state={gender:'',body:'',occ:''};
 let lastResult=null;
 let activeTryOnItem=null;
 let itemCounter=0;
 
-// ============ AFFILIATE CONFIG ============
 const AFF = {
   amazon: 'YOURTAG-21',
   flipkart: 'YOURID',
 };
 
-// ============ SEARCH LINK BUILDER ============
 function buildSearchLink(store, query) {
   const q = encodeURIComponent(query.trim());
   switch(store) {
@@ -216,7 +210,6 @@ function buildSearchLink(store, query) {
   return '#';
 }
 
-// ============ ITEM QUERIES ============
 const ITEM_QUERY = {
   watch:      (g,o) => `${g} ${o} watch`.trim(),
   sunglasses: (g,o) => `${g} ${o} sunglasses`.trim(),
@@ -224,14 +217,12 @@ const ITEM_QUERY = {
   chain:      (g,o) => `${g} ${o} chain necklace`.trim()
 };
 
-// Helper: Get current gender/occasion for queries
 function getQueryParts() {
   const g = state.gender ? (state.gender.toLowerCase() === 'men' ? 'men' : state.gender.toLowerCase() === 'women' ? 'women' : '') : '';
   const occ = state.occ ? state.occ.toLowerCase() : '';
   return { g, occ };
 }
 
-// ============ FORM ============
 document.querySelectorAll('.options').forEach(g=>{
   g.querySelectorAll('.opt').forEach(o=>{
     o.onclick=()=>{
@@ -249,7 +240,6 @@ function go(id){
   window.scrollTo(0,0);
 }
 
-// ============ RESULT DATA ============
 const BODY_DATA={
   Slim:{fit:'Fitted aur layered kapde pehnein. Horizontal stripes aur texture add karein.',avoid:'Bahut loose ya oversized',items:['Slim fit shirts','Layered jackets','Chunky sneakers']},
   Average:{fit:'Well-fitted clothes. Vertical lines se height badiya lagti hai.',avoid:'Bahut tight ya bahut loose',items:['Regular fit shirts','Vertical stripes','Chinos']},
@@ -270,21 +260,18 @@ function result(){
   const b=BODY_DATA[state.body], o=OCC_DATA[state.occ];
   lastResult={...state};
   const { g, occ } = getQueryParts();
-
   const mainQuery = `${g} ${occ} outfit`.trim();
   const watchQuery = `${g} ${occ} watch`.trim();
 
   const html=`
     <h1 style="font-size:24px">Aapka Perfect Style ✨</h1>
     <p class="sub" style="margin-bottom:18px">Aapki ${state.body} body aur ${state.occ} occasion ke liye perfect look.</p>
-
     <div class="card">
       <div class="tag">PERFECT FIT GUIDE</div>
       <h3>${state.body} body ke liye</h3>
       <p style="color:#bbb;font-size:14px;line-height:1.6;margin-top:8px">${b.fit}</p>
       <p style="color:#e86868;font-size:13px;margin-top:10px">✗ Avoid: ${b.avoid}</p>
     </div>
-
     <div class="card">
       <div class="tag">${state.occ.toUpperCase()} LOOK</div>
       <h3>Aapka Outfit combination</h3>
@@ -293,7 +280,6 @@ function result(){
       <div class="row"><span>Accessories</span><span>${o.extra}</span></div>
       <div class="row"><span>Style Type</span><span>${state.gender}</span></div>
     </div>
-
     <div class="card">
       <div class="tag">RECOMMENDED ITEMS</div>
       <h3>Aap par ye zaroor suit karega</h3>
@@ -308,7 +294,6 @@ function result(){
         <a class="alt" href="${buildSearchLink('nykaa', mainQuery)}" target="_blank" style="background:#fc2779;color:#fff">Nykaa</a>
       </div>
     </div>
-
     <div class="card">
       <div class="tag">WATCH & WEARABLES</div>
       <h3>Aap par sabse zyada suit karega</h3>
@@ -323,7 +308,6 @@ function result(){
   go('s3');
 }
 
-// ============ TRY ON ============
 function openTryOn(){
   go('s4');
   document.getElementById('tryonContent').innerHTML=`
@@ -365,16 +349,13 @@ function renderTryOn(photoSrc){
       <img src="${photoSrc}" id="userPhoto">
       <div class="tryon-overlay" id="tryonOverlay"></div>
     </div>
-    
     <p style="color:#888;font-size:12px;text-align:center;margin-bottom:10px">👇 Neeche se item chunein. Photo pe drag karke set karein.</p>
-    
     <div class="palette" id="palette">
       <div class="palette-item" onclick="addItem('watch')"><span class="ico">⌚</span>Watch</div>
       <div class="palette-item" onclick="addItem('sunglasses')"><span class="ico">🕶️</span>Sunglasses</div>
       <div class="palette-item" onclick="addItem('cap')"><span class="ico">🧢</span>Cap</div>
       <div class="palette-item" onclick="addItem('chain')"><span class="ico">📿</span>Chain</div>
     </div>
-    
     <div class="item-controls" id="itemControls" style="display:none">
       <button class="ctrl-btn" onclick="resizeItem(1.15)">＋</button>
       <button class="ctrl-btn" onclick="resizeItem(0.87)">－</button>
@@ -382,7 +363,6 @@ function renderTryOn(photoSrc){
       <button class="ctrl-btn" onclick="rotateItem(15)">↻</button>
       <button class="ctrl-btn danger" onclick="deleteItem()">✕</button>
     </div>
-
     <div id="itemBuyBox"></div>
   `;
 }
@@ -392,4 +372,155 @@ function showItemBuyBox(itemType){
   if(!box) return;
   const { g, occ } = getQueryParts();
   const query = ITEM_QUERY[itemType] ? ITEM_QUERY[itemType](g, occ) : itemType;
-  con
+  const itemName = itemType.charAt(0).toUpperCase() + itemType.slice(1);
+  box.innerHTML = `
+    <div class="item-buy-box">
+      <p>💡 Ye ${itemName} aapko pasand aaya? Abhi Kharido:</p>
+      <div class="buy">
+        <a href="${buildSearchLink('amazon', query)}" target="_blank">Amazon</a>
+        <a class="alt" href="${buildSearchLink('flipkart', query)}" target="_blank">Flipkart</a>
+        <a href="${buildSearchLink('myntra', query)}" target="_blank" style="background:#ff3f6c;color:#fff">Myntra</a>
+        <a class="alt" href="${buildSearchLink('meesho', query)}" target="_blank" style="background:#f43397;color:#fff">Meesho</a>
+      </div>
+    </div>
+  `;
+}
+
+const ITEMS={
+  watch:`<svg viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="5" width="24" height="35" fill="#c0c0c0" rx="4"/><rect x="38" y="90" width="24" height="35" fill="#c0c0c0" rx="4"/><rect x="35" y="30" width="30" height="70" fill="#a0a0a0" rx="6"/><circle cx="50" cy="65" r="24" fill="#e8e8e8" stroke="#888" stroke-width="3"/><circle cx="50" cy="65" r="20" fill="#1a1a1a"/><line x1="50" y1="65" x2="50" y2="50" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><line x1="50" y1="65" x2="62" y2="68" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="50" cy="65" r="2" fill="#f5c542"/></svg>`,
+  sunglasses:`<svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><path d="M 5 30 Q 0 30 0 35 L 0 40" stroke="#222" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M 195 30 Q 200 30 200 35 L 200 40" stroke="#222" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="55" cy="45" rx="42" ry="28" fill="#111" stroke="#222" stroke-width="3"/><ellipse cx="145" cy="45" rx="42" ry="28" fill="#111" stroke="#222" stroke-width="3"/><line x1="97" y1="40" x2="103" y2="40" stroke="#222" stroke-width="5" stroke-linecap="round"/><ellipse cx="48" cy="38" rx="12" ry="7" fill="rgba(255,255,255,.15)"/><ellipse cx="138" cy="38" rx="12" ry="7" fill="rgba(255,255,255,.15)"/></svg>`,
+  cap:`<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg"><path d="M 30 95 Q 100 15 170 95 Z" fill="#1a1a1a" stroke="#0a0a0a" stroke-width="2"/><path d="M 30 95 Q 100 85 170 95 L 170 105 Q 100 95 30 105 Z" fill="#0f0f0f"/><path d="M 170 95 Q 195 100 195 110 L 195 118 Q 170 105 165 105 Z" fill="#0f0f0f"/><circle cx="100" cy="20" r="5" fill="#333"/></svg>`,
+  chain:`<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg"><path d="M 25 15 Q 100 145 175 15" stroke="#d4af37" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="100" cy="105" r="14" fill="#d4af37" stroke="#a88a20" stroke-width="2"/><circle cx="100" cy="105" r="7" fill="#a88a20"/><circle cx="100" cy="105" r="3" fill="#f5c542"/></svg>`
+};
+
+const DEFAULT_SIZE={watch:90,sunglasses:180,cap:180,chain:170};
+
+function addItem(type){
+  const area=document.getElementById('tryonArea');
+  const overlay=document.getElementById('tryonOverlay');
+  if(!area||!overlay) return;
+  const areaRect=area.getBoundingClientRect();
+  const id='item_'+ (++itemCounter);
+  const size=DEFAULT_SIZE[type];
+  const div=document.createElement('div');
+  div.className='tryon-item';
+  div.id=id;
+  div.dataset.type=type;
+  div.dataset.rotation=0;
+  div.dataset.scale=1;
+  div.style.width=size+'px';
+  div.style.left=(areaRect.width/2 - size/2)+'px';
+  div.style.top=(areaRect.height/2 - 50)+'px';
+  div.innerHTML=ITEMS[type];
+  overlay.appendChild(div);
+  attachDrag(div);
+  selectItem(div);
+}
+
+function attachDrag(el){
+  let startX=0,startY=0,startLeft=0,startTop=0,isDragging=false;
+  el.addEventListener('pointerdown',(e)=>{
+    if(e.target.closest('.ctrl-btn')) return;
+    e.preventDefault();
+    selectItem(el);
+    isDragging=true;
+    const areaRect=el.parentElement.getBoundingClientRect();
+    const rect=el.getBoundingClientRect();
+    startX=e.clientX;
+    startY=e.clientY;
+    startLeft=rect.left-areaRect.left;
+    startTop=rect.top-areaRect.top;
+    el.setPointerCapture(e.pointerId);
+  });
+  el.addEventListener('pointermove',(e)=>{
+    if(!isDragging) return;
+    e.preventDefault();
+    const dx=e.clientX-startX;
+    const dy=e.clientY-startY;
+    el.style.left=(startLeft+dx)+'px';
+    el.style.top=(startTop+dy)+'px';
+  });
+  el.addEventListener('pointerup',(e)=>{
+    isDragging=false;
+    try{ el.releasePointerCapture(e.pointerId); }catch(err){}
+  });
+  el.addEventListener('pointercancel',()=>{ isDragging=false; });
+}
+
+function selectItem(el){
+  document.querySelectorAll('.tryon-item').forEach(i=>i.classList.remove('selected'));
+  el.classList.add('selected');
+  activeTryOnItem=el;
+  document.getElementById('itemControls').style.display='flex';
+  showItemBuyBox(el.dataset.type);
+}
+
+function resizeItem(factor){
+  if(!activeTryOnItem) return;
+  const current=parseFloat(activeTryOnItem.dataset.scale)||1;
+  const newScale=current*factor;
+  if(newScale<0.3||newScale>5) return;
+  activeTryOnItem.dataset.scale=newScale;
+  applyTransform(activeTryOnItem);
+}
+
+function rotateItem(deg){
+  if(!activeTryOnItem) return;
+  const current=parseFloat(activeTryOnItem.dataset.rotation)||0;
+  activeTryOnItem.dataset.rotation=current+deg;
+  applyTransform(activeTryOnItem);
+}
+
+function applyTransform(el){
+  const s=el.dataset.scale||1;
+  const r=el.dataset.rotation||0;
+  el.style.transform=`rotate(${r}deg) scale(${s})`;
+}
+
+function deleteItem(){
+  if(!activeTryOnItem) return;
+  activeTryOnItem.remove();
+  activeTryOnItem=null;
+  document.getElementById('itemControls').style.display='none';
+  document.getElementById('itemBuyBox').innerHTML='';
+}
+
+function saveLook(){
+  if(!lastResult) return;
+  const favs=JSON.parse(localStorage.getItem('jogaFavs')||'[]');
+  favs.push({...lastResult,t:Date.now()});
+  localStorage.setItem('jogaFavs',JSON.stringify(favs));
+  alert('✓ Look saved!');
+}
+
+function showFavs(){
+  const favs=JSON.parse(localStorage.getItem('jogaFavs')||'[]');
+  const list=document.getElementById('favList');
+  if(!favs.length){list.innerHTML='<div class="empty">Abhi tak koi look save nahi kiya.<br>Style banayein aur ★ dabayein!</div>';}
+  else{
+    list.innerHTML=favs.reverse().map((f,i)=>`
+      <div class="fav-item">
+        <span class="del" onclick="delFav(${favs.length-1-i})">✕ Delete</span>
+        <b>${f.occ||'-'}</b> • ${f.body||'-'}<br>
+        <span style="color:#888;font-size:12px">${f.gender||'-'} • ${new Date(f.t).toLocaleDateString()}</span>
+      </div>`).join('');
+  }
+  go('s5');
+}
+
+function delFav(i){
+  const favs=JSON.parse(localStorage.getItem('jogaFavs')||'[]');
+  favs.splice(i,1);
+  localStorage.setItem('jogaFavs',JSON.stringify(favs));
+  showFavs();
+}
+
+function reset(){
+  state.gender=state.body=state.occ='';
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  document.getElementById('goBtn').disabled=true;
+  go('s2');
+}
+</script>
+</body>
+</html>
