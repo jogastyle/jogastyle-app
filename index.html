@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>JogaStyle - Style Yourself</title>
+<meta name="theme-color" content="#111">
+<link rel="manifest" href='data:application/manifest+json,{"name":"JogaStyle","short_name":"JogaStyle","start_url":"./","display":"standalone","background_color":"%23111","theme_color":"%23111"}'>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:#0d0d0d;color:#fff;min-height:100vh;overflow-x:hidden}
+.app{max-width:480px;margin:0 auto;padding:20px;min-height:100vh}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.logo{font-size:24px;font-weight:800;background:linear-gradient(135deg,#f5c542,#e88b3c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px}
+.logo span{font-weight:300}
+.fav-btn{background:#1c1c1c;border:1px solid #2a2a2a;color:#f5c542;padding:8px 14px;border-radius:20px;font-size:13px;cursor:pointer}
+.screen{display:none;animation:fade .4s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:28px;font-weight:800;line-height:1.2;margin-bottom:12px;letter-spacing:-.5px}
+h1 em{font-style:normal;background:linear-gradient(135deg,#f5c542,#e88b3c);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sub{color:#888;font-size:15px;line-height:1.6;margin-bottom:28px}
+.label{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;font-weight:600}
+.options{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:22px}
+.options.three{grid-template-columns:repeat(3,1fr)}
+.opt{background:#1a1a1a;border:1.5px solid #262626;border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;transition:.2s;font-size:14px;font-weight:500}
+.opt:active{transform:scale(.96)}
+.opt.sel{border-color:#f5c542;background:#241f0f;color:#f5c542}
+.btn{width:100%;background:linear-gradient(135deg,#f5c542,#e88b3c);color:#111;border:none;padding:17px;border-radius:16px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;transition:.2s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:#1a1a1a;color:#fff;border:1.5px solid #262626}
+.btn:disabled{opacity:.35}
+.btn-green{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff}
+.card{background:#161616;border:1px solid #242424;border-radius:20px;padding:20px;margin-bottom:14px}
+.card h3{font-size:16px;font-weight:700;margin-bottom:4px}
+.pill{display:inline-block;background:#241f0f;color:#f5c542;border:1px solid #3d3418;padding:6px 12px;border-radius:20px;font-size:12px;margin:0 6px 6px 0}
+.buy{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+.buy a{text-align:center;background:#f5c542;color:#111;padding:11px;border-radius:12px;font-size:12px;font-weight:700;text-decoration:none;display:flex;align-items:center;justify-content:center}
+.buy a.alt{background:#262626;color:#fff}
+.tag{display:inline-block;background:#1f1f1f;color:#aaa;font-size:11px;padding:4px 10px;border-radius:8px;margin-bottom:10px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #222;font-size:14px}
+.row:last-child{border:none}
+.row span:first-child{color:#888;font-size:13px}
+.row span:last-child{font-weight:600;text-align:right;max-width:60%}
+.fav-item{background:#161616;border:1px solid #242424;border-radius:14px;padding:14px;margin-bottom:10px;font-size:14px}
+.fav-item b{color:#f5c542}
+.fav-item .del{float:right;color:#e86868;cursor:pointer;font-size:12px}
+.empty{text-align:center;color:#666;padding:60px 20px;font-size:14px}
+.footer{text-align:center;color:#444;font-size:11px;padding:30px 0 10px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:20px;z-index:1000}
+.modal.show{display:flex}
+.modal-box{background:#161616;border:1px solid #2a2a2a;border-radius:20px;padding:24px;max-width:400px;width:100%}
+.modal-box h3{font-size:18px;font-weight:700;margin-bottom:12px;color:#f5c542}
+.modal-box p{color:#bbb;font-size:14px;line-height:1.7;margin-bottom:10px}
+.modal-box ul{color:#bbb;font-size:13px;line-height:1.9;margin:12px 0 12px 20px}
+.modal-box ul li{color:#ddd}
+.modal-box .privacy{color:#4caf50;font-size:12px;margin-top:12px;line-height:1.5}
+.tryon-area{position:relative;background:#000;border-radius:20px;overflow:hidden;margin-bottom:14px;display:flex;align-items:center;justify-content:center;min-height:300px}
+.tryon-area img{max-width:100%;max-height:70vh;display:block;user-select:none;pointer-events:none}
+.tryon-overlay{position:absolute;inset:0;pointer-events:none}
+.tryon-item{position:absolute;pointer-events:auto;cursor:move;touch-action:none;user-select:none}
+.tryon-item.selected{outline:2px dashed #f5c542;outline-offset:4px}
+.tryon-item svg{display:block;width:100%;height:auto;pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}
+.item-controls{display:flex;gap:6px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+.ctrl-btn{background:#1a1a1a;border:1.5px solid #333;color:#fff;width:44px;height:44px;border-radius:12px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.ctrl-btn:active{transform:scale(.9)}
+.ctrl-btn.danger{border-color:#e86868;color:#e86868}
+.palette{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.palette-item{background:#1a1a1a;border:1.5px solid #262626;border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;font-size:11px;color:#aaa}
+.palette-item:active{transform:scale(.95)}
+.palette-item .ico{font-size:22px;margin-bottom:4px;display:block}
+.empty-upload{border:2px dashed #333;border-radius:20px;padding:50px 20px;text-align:center;cursor:pointer;background:#111}
+.empty-upload .big{font-size:44px;margin-bottom:10px;display:block}
+.empty-upload p{color:#888;font-size:14px;line-height:1.6}
+.item-buy-box{background:linear-gradient(135deg,#241f0f,#161616);border:1px solid #3d3418;border-radius:16px;padding:14px;margin-bottom:12px;text-align:center}
+.item-buy-box p{color:#f5c542;font-size:13px;font-weight:600;margin-bottom:10px}
+.item-buy-box .buy{margin-top:0}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="logo">Joga<span>Style</span></div>
+    <button class="fav-btn" onclick="showFavs()">★ Saved</button>
+  </div>
+
+  <div class="screen active" id="s1">
+    <h1>Chaliye, apna <em>best style</em> dhoondhte hain!</h1>
+    <p class="sub">Bas 3 sawaal. Ek dost ki tarah hum aapko batayenge ki aapki body type ke hisaab se kaunse colors aur kapde aap par sabse zyada suit karenge. Phir apni photo pe try bhi kar sakte hain!</p>
+    <div class="card" style="background:linear-gradient(135deg,#241f0f,#161616);border-color:#3d3418">
+      <div class="tag">BILKUL FREE</div>
+      <h3>Aapko kya khaas milega?</h3>
+      <p style="color:#999;font-size:13px;line-height:1.7;margin-top:8px">
+        ✓ Aapke liye perfect colors aur outfit<br>
+        ✓ Watch, footwear, accessories suggestions<br>
+        ✓ <b style="color:#f5c542">Photo pe try-on feature</b><br>
+        ✓ Direct shopping links
+      </p>
+    </div>
+    <button class="btn" onclick="go('s2')">Chaliye Shuru Karein →</button>
+  </div>
+
+  <div class="screen" id="s2">
+    <h1 style="font-size:22px">Apne baare me thoda batayein</h1>
+    <p class="sub" style="margin-bottom:20px">Sahi jawab = Sahi suggestion</p>
+
+    <div class="label">1. Gender</div>
+    <div class="options three" id="gender">
+      <div class="opt" data-v="Men">Men</div>
+      <div class="opt" data-v="Women">Women</div>
+      <div class="opt" data-v="Unisex">Both</div>
+    </div>
+
+    <div class="label">2. Body Type</div>
+    <div class="options" id="body">
+      <div class="opt" data-v="Slim">Slim</div>
+      <div class="opt" data-v="Average">Average</div>
+      <div class="opt" data-v="Athletic">Athletic</div>
+      <div class="opt" data-v="Heavy">Heavy</div>
+    </div>
+
+    <div class="label">3. Occasion</div>
+    <div class="options three" id="occ">
+      <div class="opt" data-v="Casual">Casual</div>
+      <div class="opt" data-v="Office">Office</div>
+      <div class="opt" data-v="Party">Party</div>
+      <div class="opt" data-v="Wedding">Wedding</div>
+      <div class="opt" data-v="Date">Date</div>
+      <div class="opt" data-v="Festival">Festival</div>
+    </div>
+
+    <button class="btn" id="goBtn" disabled onclick="result()">Mera Style Dekhein ✨</button>
+    <button class="btn ghost" style="margin-top:10px" onclick="go('s1')">← Back</button>
+  </div>
+
+  <div class="screen" id="s3">
+    <div id="resultBody"></div>
+    <button class="btn btn-green" style="margin-top:6px" onclick="openTryOn()">📸 Photo pe Try Karein</button>
+    <button class="btn" style="margin-top:8px" onclick="saveLook()">★ Save This Look</button>
+    <button class="btn ghost" style="margin-top:10px" onclick="reset()">↻ Dobara Try Karein</button>
+  </div>
+
+  <div class="screen" id="s4">
+    <h1 style="font-size:22px">Photo pe Try Karein</h1>
+    <p class="sub" style="margin-bottom:16px">Apni photo upload karein aur accessories try karein</p>
+    <div id="tryonContent"></div>
+    <button class="btn ghost" style="margin-top:16px" onclick="go('s3')">← Result pe wapas</button>
+  </div>
+
+  <div class="screen" id="s5">
+    <h1 style="font-size:22px">Aapke Pasandida Looks</h1>
+    <p class="sub">Aapke save kiye hue styles</p>
+    <div id="favList"></div>
+    <button class="btn ghost" style="margin-top:16px" onclick="go('s1')">← Home</button>
+  </div>
+
+  <div class="footer">JogaStyle • Made in India 🇮🇳</div>
+</div>
+
+<div class="modal" id="warningModal">
+  <div class="modal-box">
+    <h3>📸 Photo Upload se pehle</h3>
+    <p>Behtar result ke liye ye dhyan rakhein:</p>
+    <ul>
+      <li>Puri body (sar se pair tak) ki photo lein</li>
+      <li>Acchi roshni me photo lein</li>
+      <li>Simple background ho to aur accha</li>
+      <li>Kapde pehne hue ho to accessories sahi dikhenge</li>
+    </ul>
+    <p class="privacy">🔒 <b>Privacy:</b> Aapki photo sirf aapke phone me process hoti hai. Kahin upload nahi hoti.</p>
+    <button class="btn" onclick="confirmUpload()">Samajh Gaya, Photo Chunein</button>
+    <button class="btn ghost" style="margin-top:8px" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhoto(event)">
+
+<script>
+const state={gender:'',body:'',occ:''};
+let lastResult=null;
+let activeTryOnItem=null;
+let itemCounter=0;
+
+// ============ AFFILIATE CONFIG ============
+// YAHAN APNE AFFILIATE TAGS DAALEIN (approval ke baad)
+const AFF = {
+  amazon: 'YOURTAG-21',      // Amazon Associates tag
+  flipkart: 'YOURID',        // Flipkart affiliate ID
+  // Myntra, Meesho, Ajio, Nykaa ka apna tracking URL hota hai
+};
+
+// ============ SEARCH LINK BUILDER ============
+// Ye function search query banata hai aur affiliate link return karta hai
+function buildSearchLink(store, query) {
+  const q = encodeURIComponent(query);
+  switch(store) {
+    case 'amazon':
+      return `https://www.amazon.in/s?k=${q}&tag=${AFF.amazon}`;
+    case 'flipkart':
+      return `https://www.flipkart.com/search?q=${q}&affid=${AFF.flipkart}`;
+    case 'myntra':
+      return `https://www.myntra.com/${q}`;
+    case 'meesho':
+      return `https://www.meesho.com/search?q=${q}`;
+    case 'ajio':
+      return `https://www.ajio.com/search/?text=${q}`;
+    case 'nykaa':
+      return `https://www.nykaafashion.com/search?q=${q}`;
+  }
+  return '#';
+}
+
+// ============ ITEM SEARCH QUERIES ============
+// Har item ka specific search query
+const ITEM_QUERY = {
+  watch:      (g,o) => `${g} ${o} watch`,
+  sunglasses: (g,o) => `${g} ${o} sunglasses`,
+  cap:        (g,o) => `${g} ${o} cap hat`,
+  chain:      (g,o) => `${g} chain necklace`,
+  bracelet:   (g,o) => `${g} bracelet`,
+  earrings:   (g,o) => `${g} earrings`,
+  shoes:      (g,o) => `${g} ${o} shoes`,
+  bag:        (g,o) => `${g} ${o} bag`
+};
+
+// ============ FORM ============
+document.querySelectorAll('.options').forEach(g=>{
+  g.querySelectorAll('.opt').forEach(o=>{
+    o.onclick=()=>{
+      g.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
+      o.classList.add('sel');
+      state[g.id]=o.dataset.v;
+      document.getElementById('goBtn').disabled=!(state.gender&&state.body&&state.occ);
+    };
+  });
+});
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ============ RESULT DATA ============
+const BODY_DATA={
+  Slim:{fit:'Fitted aur layered kapde pehnein. Horizontal stripes aur texture add karein.',avoid:'Bahut loose ya oversized',items:['Slim fit shirts','Layered jackets','Chunky sneakers']},
+  Average:{fit:'Well-fitted clothes. Vertical lines se height badiya lagti hai.',avoid:'Bahut tight ya bahut loose',items:['Regular fit shirts','Vertical stripes','Chinos']},
+  Athletic:{fit:'Fitted kapde pehnein jo body shape dikhaye.',avoid:'Oversized hoodies',items:['Fitted t-shirts','Polo shirts','Chelsea boots']},
+  Heavy:{fit:'Dark solid colors, vertical lines, structured kapde.',avoid:'Horizontal stripes, big prints',items:['Dark solid shirts','Structured blazers','Dark jeans']}
+};
+
+const OCC_DATA={
+  Casual:{outfit:'T-shirt + Jeans / Chinos',shoe:'Sneakers / Loafers',extra:'Casual watch, minimal accessories'},
+  Office:{outfit:'Formal shirt + Trousers / Blazer',shoe:'Oxford / Formal shoes',extra:'Leather strap watch, belt match karein'},
+  Party:{outfit:'Dark shirt / Blazer + Fitted pants',shoe:'Chelsea boots / Heels',extra:'Metal watch, chain / bracelet'},
+  Wedding:{outfit:'Sherwani / Kurta / Ethnic suit',shoe:'Mojari / Juttis',extra:'Gold watch, ethnic accessories'},
+  Date:{outfit:'Fitted shirt / Dress + Smart pants',shoe:'Loafers / Heels',extra:'Elegant watch, light perfume'},
+  Festival:{outfit:'Kurta / Ethnic wear + Dupatta',shoe:'Juttis / Sandals',extra:'Gold jewellery, bright watch'}
+};
+
+function result(){
+  const b=BODY_DATA[state.body], o=OCC_DATA[state.occ];
+  lastResult={...state};
+  const g = state.gender.toLowerCase() === 'men' ? 'men' :
+            state.gender.toLowerCase() === 'women' ? 'women' : '';
+  const occ = state.occ.toLowerCase();
+
+  const mainQuery = `${g} ${occ} outfit`;
+  const watchQuery = `${g} ${occ} watch`;
+
+  const html=`
+    <h1 style="font-size:24px">Aapka Perfect Style ✨</h1>
+    <p class="sub" style="margin-bottom:18px">Aapki ${state.body} body aur ${state.occ} occasion ke liye perfect look.</p>
+
+    <div class="card">
+      <div class="tag">PERFECT FIT GUIDE</div>
+      <h3>${state.body} body ke liye</h3>
+      <p style="color:#bbb;font-size:14px;line-height:1.6;margin-top:8px">${b.fit}</p>
+      <p style="color:#e86868;font-size:13px;margin-top:10px">✗ Avoid: ${b.avoid}</p>
+    </div>
+
+    <div class="card">
+      <div class="tag">${state.occ.toUpperCase()} LOOK</div>
+      <h3>Aapka Outfit combination</h3>
+      <div class="row"><span>Outfit</span><span>${o.outfit}</span></div>
+      <div class="row"><span>Footwear</span><span>${o.shoe}</span></div>
+      <div class="row"><span>Accessories</span><span>${o.extra}</span></div>
+      <div class="row"><span>Style Type</span><span>${state.gender}</span></div>
+    </div>
+
+    <div class="card">
+      <div class="tag">RECOMMENDED ITEMS</div>
+      <h3>Aap par ye zaroor suit karega</h3>
+      <div style="margin-top:10px">${b.items.map(i=>`<span class="pill">${i}</span>`).join('')}</div>
+      
+      <p style="color:#888;font-size:12px;margin-top:15px;margin-bottom:5px">Abhi Kharido:</p>
+      <div class="buy">
+        <a href="${buildSearchLink('amazon', mainQuery)}" target="_blank">Amazon</a>
+        <a class="alt" href="${buildSearchLink('flipkart', mainQuery)}" target="_blank">Flipkart</a>
+        <a href="${buildSearchLink('myntra', mainQuery)}" target="_blank" style="background:#ff3f6c;color:#fff">Myntra</a>
+        <a class="alt" href="${buildSearchLink('meesho', mainQuery)}" target="_blank" style="background:#f43397;color:#fff">Meesho</a>
+        <a href="${buildSearchLink('ajio', mainQuery)}" target="_blank" style="background:#2c4152;color:#fff">Ajio</a>
+        <a class="alt" href="${buildSearchLink('nykaa', mainQuery)}" target="_blank" style="background:#fc2779;color:#fff">Nykaa</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="tag">WATCH & WEARABLES</div>
+      <h3>Aap par sabse zyada suit karega</h3>
+      <div class="row"><span>Style</span><span>${occ==='office'||occ==='wedding'?'Classic / Formal':'Sporty / Casual'}</span></div>
+      <div class="buy">
+        <a href="${buildSearchLink('amazon', watchQuery)}" target="_blank">Watch Amazon</a>
+        <a class="alt" href="${buildSearchLink('flipkart', watchQuery)}" target="_blank">Watch Flipkart</a>
+      </div>
+    </div>
+  `;
+  document.getElementById('resultBody').innerHTML=html;
+  go('s3');
+}
+
+// ============ TRY ON ============
+function openTryOn(){
+  go('s4');
+  document.getElementById('tryonContent').innerHTML=`
+    <div class="empty-upload" onclick="startPhotoUpload()">
+      <span class="big">📷</span>
+      <p><b style="color:#f5c542;font-size:15px">Photo Upload Karein</b></p>
+      <p style="margin-top:6px">Tap karke apni photo chunein</p>
+    </div>
+  `;
+}
+
+function startPhotoUpload(){
+  document.getElementById('warningModal').classList.add('show');
+}
+
+function closeModal(){
+  document.getElementById('warningModal').classList.remove('show');
+}
+
+function confirmUpload(){
+  closeModal();
+  document.getElementById('photoInput').click();
+}
+
+function handlePhoto(e){
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    renderTryOn(ev.target.result);
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+}
+
+function renderTryOn(photoSrc){
+  document.getElementById('tryonContent').innerHTML=`
+    <div class="tryon-area" id="tryonArea">
+      <img src="${photoSrc}" id="userPhoto">
+      <div class="tryon-overlay" id="tryonOverlay"></div>
+    </div>
+    
+    <p style="color:#888;font-size:12px;text-align:center;margin-bottom:10px">👇 Neeche se item chunein. Photo pe drag karke set karein.</p>
+    
+    <div class="palette" id="palette">
+      <div class="palette-item" onclick="addItem('watch')"><span class="ico">⌚</span>Watch</div>
+      <div class="palette-item" onclick="addItem('sunglasses')"><span class="ico">🕶️</span>Sunglasses</div>
+      <div class="palette-item" onclick="addItem('cap')"><span class="ico">🧢</span>Cap</div>
+      <div class="palette-item" onclick="addItem('chain')"><span class="ico">📿</span>Chain</div>
+    </div>
+    
+    <div class="item-controls" id="itemControls" style="display:none">
+      <button class="ctrl-btn" onclick="resizeItem(1.15)">＋</button>
+      <button class="ctrl-btn" onclick="resizeItem(0.87)">－</button>
+      <button class="ctrl-btn" onclick="rotateItem(-15)">↺</button>
+      <button class="ctrl-btn" onclick="rotateItem(15)">↻</button>
+      <button class="ctrl-btn danger" onclick="deleteItem()">✕</button>
+    </div>
+
+    <div id="itemBuyBox"></div>
+  `;
+}
+
+// Ye function jab item select ho to uske liye "Buy" button show karta hai
+function showItemBuyBox(itemType){
+  const box=document.getElementById('itemBuyBox');
+  if(!box) return;
+  const g = state.gender.toLowerCase() === 'men' ? 'men' :
+            state.gender.toLowerCase() === 'women' ? 'women' : '';
+  const occ = state.occ.toLowerCase();
+  const query = ITEM_QUERY[itemType] ? ITEM_QUERY[itemType](g, occ) : itemType;
+  const itemName = itemType.charAt(0).toUpperCase() + itemType.slice(1);
+
+  box.innerHTML = `
+    <div class="item-buy-box">
+      <p>💡 Ye ${itemName} 
